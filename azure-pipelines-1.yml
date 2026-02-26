@@ -1,0 +1,26 @@
+trigger:
+- main   # your github branch name (main/master check pannunga)
+
+pool:
+  name: Default   # self-hosted agent use panna
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+  displayName: 'Use Python'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: Install dependencies
+
+- script: |
+    pytest -q
+  displayName: Run tests
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)'
+    artifact: 'drop'
+  displayName: Publish artifact
